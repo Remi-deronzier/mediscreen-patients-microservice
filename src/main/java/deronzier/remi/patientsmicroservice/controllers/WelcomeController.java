@@ -2,6 +2,7 @@ package deronzier.remi.patientsmicroservice.controllers;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Rémi Deronzier
  */
 @RestController
+@RequestMapping("/")
 public class WelcomeController {
 
     @Value("${label.welcome}")
