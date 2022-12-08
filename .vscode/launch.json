@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-PatientsMicroserviceApplication<patients-microservice>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "deronzier.remi.patientsmicroservice.PatientsMicroserviceApplication",
+      "projectName": "patients-microservice",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
