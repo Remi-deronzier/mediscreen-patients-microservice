@@ -31,7 +31,7 @@ import deronzier.remi.patientsmicroservice.models.Sex;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class PatientControllerTest {
+public class PatientControllerIT {
 
     private final static long GOOD_ID_FIRST_PATIENT = 1;
     private final static String LAST_NAME_OF_FIRST_PATIENT_IN_TEST_DB = "DERONZIER";
