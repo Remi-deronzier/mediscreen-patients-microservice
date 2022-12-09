@@ -11,11 +11,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import jakarta.transaction.Transactional;
-
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
+@javax.transaction.Transactional
 public class WelcomeControllerIT {
 
     private final static String WELCOME_MESSAGE = "Hello, welcome to patients microservice";
