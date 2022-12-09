@@ -12,12 +12,15 @@ import java.time.LocalDate;
 
 import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -27,6 +30,7 @@ import deronzier.remi.patientsmicroservice.models.Sex;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class PatientControllerTest {
 
     private final static long GOOD_ID_FIRST_PATIENT = 1;
@@ -67,85 +71,102 @@ public class PatientControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    public void givenGoodId_whenGettingAPatient_thenSuccess() throws Exception {
-        mockMvc.perform(get("/patients/{id}", GOOD_ID_FIRST_PATIENT))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lastName", is(LAST_NAME_OF_FIRST_PATIENT_IN_TEST_DB)));
+    @Nested
+    @Tag("Get a patient")
+    class getAPatientTests {
+        @Test
+        public void givenGoodId_whenGettingAPatient_thenSuccess() throws Exception {
+            mockMvc.perform(get("/patients/{id}", GOOD_ID_FIRST_PATIENT))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.lastName", is(LAST_NAME_OF_FIRST_PATIENT_IN_TEST_DB)));
+        }
+
+        @Test
+        public void givenBadId_whenGettingAPatient_thenFailure() throws Exception {
+            mockMvc.perform(get("/patients/{id}", BAD_ID))
+                    .andExpect(status().isNotFound());
+        }
     }
 
-    @Test
-    public void givenBadId_whenGettingAPatient_thenFailure() throws Exception {
-        mockMvc.perform(get("/patients/{id}", BAD_ID))
-                .andExpect(status().isNotFound());
+    @Nested
+    @Tag("Get all patients")
+    class getAllPatientsTests {
+        @Test
+        public void givenFirstPage_whenGettingAllPatients_thenSuccess() throws Exception {
+            mockMvc.perform(get("/patients"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.empty", is(false)));
+        }
+
+        @Test
+        public void givenSecondPage_whenGettingAllPatients_thenSuccess() throws Exception {
+            mockMvc.perform(get("/patients?page=1"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content", is(IsEmptyCollection.empty())));
+        }
     }
 
-    @Test
-    public void givenFirstPage_whenGettingAllPatients_thenSuccess() throws Exception {
-        mockMvc.perform(get("/patients"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.empty", is(false)));
+    @Nested
+    @Tag("Create a patient")
+    class createAPatientTests {
+        @Test
+        public void givenValidPatient_whenCreatingAPatient_thenSuccess() throws Exception {
+            mockMvc.perform(post("/patients")
+                    .content(OBJECT_MAPPER.writeValueAsString(VALID_PATIENT))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.lastName", is(VALID_PATIENT.getLastName())));
+        }
+
+        @Test
+        public void givenInvalidPatient_whenCreatingAPatient_thenFailure() throws Exception {
+            mockMvc.perform(post("/patients")
+                    .content(OBJECT_MAPPER.writeValueAsString(INVALID_PATIENT))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
+        }
     }
 
-    @Test
-    public void givenSecondPage_whenGettingAllPatients_thenSuccess() throws Exception {
-        mockMvc.perform(get("/patients?page=1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", is(IsEmptyCollection.empty())));
+    @Nested
+    @Tag("Update a patient")
+    class updateAPatientTests {
+        @Test
+        public void givenUpdatedPatientWithGoodId_whenUpdatingAPatient_thenSuccess() throws Exception {
+            mockMvc.perform(put("/patients/{id}", GOOD_ID_FIRST_PATIENT)
+                    .content(OBJECT_MAPPER.writeValueAsString(VALID_PATIENT))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.firstName", is(VALID_PATIENT.getFirstName())));
+        }
+
+        @Test
+        public void givenUpdatedPatientWithBadId_whenUpdatingAPatient_thenFailure() throws Exception {
+            mockMvc.perform(put("/patients/{id}", BAD_ID)
+                    .content(OBJECT_MAPPER.writeValueAsString(VALID_PATIENT))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound());
+        }
     }
 
-    @Test
-    public void givenValidPatient_whenCreatingAPatient_thenSuccess() throws Exception {
-        mockMvc.perform(post("/patients")
-                .content(OBJECT_MAPPER.writeValueAsString(VALID_PATIENT))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.lastName", is(VALID_PATIENT.getLastName())));
-    }
+    @Nested
+    @Tag("Delete a patient")
+    class deleteAPatientTests {
+        @Test
+        public void givenGoodId_whenDeletingAPatient_thenSuccess() throws Exception {
+            mockMvc.perform(delete("/patients/{id}", GOOD_ID_FIRST_PATIENT))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(SUCCESSFUL_MESSAGE_OF_DELETION_OF_FIRST_PATIENT)));
+        }
 
-    @Test
-    public void givenInvalidPatient_whenCreatingAPatient_thenFailure() throws Exception {
-        mockMvc.perform(post("/patients")
-                .content(OBJECT_MAPPER.writeValueAsString(INVALID_PATIENT))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void givenUpdatedPatientWithGoodId_whenUpdatingAPatient_thenSuccess() throws Exception {
-        mockMvc.perform(put("/patients/{id}", GOOD_ID_FIRST_PATIENT)
-                .content(OBJECT_MAPPER.writeValueAsString(VALID_PATIENT))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName", is(VALID_PATIENT.getFirstName())));
-    }
-
-    @Test
-    public void givenUpdatedPatientWithBadId_whenUpdatingAPatient_thenFailure() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
-        mockMvc.perform(put("/patients/{id}", BAD_ID)
-                .content(objectMapper.writeValueAsString(VALID_PATIENT))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void givenGoodId_whenDeletingAPatient_thenSuccess() throws Exception {
-        mockMvc.perform(delete("/patients/{id}", GOOD_ID_FIRST_PATIENT))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", is(SUCCESSFUL_MESSAGE_OF_DELETION_OF_FIRST_PATIENT)));
-    }
-
-    @Test
-    public void givenBadId_whenDeletingAPatient_thenFailure() throws Exception {
-        mockMvc.perform(delete("/patients/{id}", BAD_ID))
-                .andExpect(status().isNotFound());
+        @Test
+        public void givenBadId_whenDeletingAPatient_thenFailure() throws Exception {
+            mockMvc.perform(delete("/patients/{id}", BAD_ID))
+                    .andExpect(status().isNotFound());
+        }
     }
 
 }
