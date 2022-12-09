@@ -1,9 +1,9 @@
 package deronzier.remi.patientsmicroservice.services.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import deronzier.remi.patientsmicroservice.exceptions.PatientNotFoundException;
@@ -35,8 +35,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<Patient> findAll() {
-        return repository.findAll();
+    public Page<Patient> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     @Override
