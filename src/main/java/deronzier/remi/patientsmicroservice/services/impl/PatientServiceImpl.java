@@ -26,6 +26,14 @@ public class PatientServiceImpl implements PatientService {
     @Value("${label.not-found}")
     private String notFound;
 
+    private String patientNotFoundMessage(long id) {
+        return patient + " " + id + " " + notFound;
+    }
+
+    private String patientSuccessfullyDeletedMessage(long id) {
+        return patient + " " + id + " " + successfullyDeleted;
+    }
+
     @Override
     public List<Patient> findAll() {
         return repository.findAll();
@@ -34,7 +42,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient find(long id) throws PatientNotFoundException {
         return repository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException(patient + " " + id + " " + notFound));
+                .orElseThrow(() -> new PatientNotFoundException(patientNotFoundMessage(id)));
     }
 
     @Override
@@ -45,7 +53,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient update(long id, Patient patient) throws PatientNotFoundException {
         Patient retrivedPatient = repository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException(patient + " " + id + " " + notFound));
+                .orElseThrow(() -> new PatientNotFoundException(patientNotFoundMessage(id)));
         if (patient.getFirstName() != null) {
             retrivedPatient.setFirstName(patient.getFirstName());
         }
@@ -69,8 +77,8 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public String delete(long id) throws PatientNotFoundException {
-        repository.findById(id).orElseThrow(() -> new PatientNotFoundException(patient + " " + id + " " + notFound));
+        repository.findById(id).orElseThrow(() -> new PatientNotFoundException(patientNotFoundMessage(id)));
         repository.deleteById(id);
-        return patient + " " + id + " " + successfullyDeleted;
+        return patientSuccessfullyDeletedMessage(id);
     }
 }
