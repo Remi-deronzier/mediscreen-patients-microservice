@@ -3,6 +3,7 @@ package deronzier.remi.patientsmicroservice.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +30,7 @@ public class PatientController {
     private PatientService service;
 
     @GetMapping
-    public Page<Patient> findAll(Pageable pageable) {
+    public Page<Patient> findAll(@SortDefault(sort = "lastName") Pageable pageable) {
         return service.findAll(pageable);
     }
 
