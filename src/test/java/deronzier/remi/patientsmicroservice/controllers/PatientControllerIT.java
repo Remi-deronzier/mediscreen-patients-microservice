@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +28,16 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import deronzier.remi.patientsmicroservice.models.Patient;
 import deronzier.remi.patientsmicroservice.models.Sex;
+import deronzier.remi.patientsmicroservice.utils.Constants;
 
+@ActiveProfiles(Constants.TEST_PROFILE)
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 public class PatientControllerIT {
 
     private final static long GOOD_ID_FIRST_PATIENT = 1;
-    private final static String LAST_NAME_OF_FIRST_PATIENT_IN_TEST_DB = "DERONZIER";
+    private final static String LAST_NAME_OF_FIRST_PATIENT_IN_TEST_DB = "ABADON";
     private final static String SUCCESSFUL_MESSAGE_OF_DELETION_OF_FIRST_PATIENT = "Patient 1 successfully deleted";
     private final static long BAD_ID = 10;
 

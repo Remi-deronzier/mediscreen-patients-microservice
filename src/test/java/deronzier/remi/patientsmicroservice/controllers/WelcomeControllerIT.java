@@ -9,11 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
+import deronzier.remi.patientsmicroservice.utils.Constants;
+
+@ActiveProfiles(Constants.TEST_PROFILE)
 @SpringBootTest
 @AutoConfigureMockMvc
-@javax.transaction.Transactional
+@Transactional
 public class WelcomeControllerIT {
 
     private final static String WELCOME_MESSAGE = "Hello, welcome to patients microservice";
