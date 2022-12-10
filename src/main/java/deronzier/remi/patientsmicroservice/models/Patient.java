@@ -15,6 +15,11 @@ import javax.validation.constraints.Past;
 
 import lombok.Data;
 
+/**
+ * This class is the POJO class for the Patient entity
+ * 
+ * @author Rémi Deronzier
+ */
 @Entity
 @Data
 public class Patient {

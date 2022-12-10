@@ -11,6 +11,11 @@ import deronzier.remi.patientsmicroservice.models.Patient;
 import deronzier.remi.patientsmicroservice.repositories.PatientRepository;
 import deronzier.remi.patientsmicroservice.services.PatientService;
 
+/**
+ * This class defines all the business logic for the Patient entity
+ * 
+ * @author Rémi Deronzier
+ */
 @Service
 public class PatientServiceImpl implements PatientService {
 
@@ -26,30 +31,57 @@ public class PatientServiceImpl implements PatientService {
     @Value("${label.not-found}")
     private String notFound;
 
+    /**
+     * @param id
+     * @return String
+     */
     private String patientNotFoundMessage(long id) {
         return patient + " " + id + " " + notFound;
     }
 
+    /**
+     * @param id
+     * @return String
+     */
     private String patientSuccessfullyDeletedMessage(long id) {
         return patient + " " + id + " " + successfullyDeleted;
     }
 
+    /**
+     * @param pageable
+     * @return Page<Patient>
+     */
     @Override
     public Page<Patient> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
+    /**
+     * @param id
+     * @return Patient
+     * @throws PatientNotFoundException
+     */
     @Override
     public Patient find(long id) throws PatientNotFoundException {
         return repository.findById(id)
                 .orElseThrow(() -> new PatientNotFoundException(patientNotFoundMessage(id)));
     }
 
+    /**
+     * @param patient
+     * @return Patient
+     */
     @Override
     public Patient save(Patient patient) {
         return repository.save(patient);
     }
 
+    /**
+     * @param id
+     * @param patient
+     * @return Patient
+     * @throws PatientNotFoundException
+     */
     @Override
     public Patient update(long id, Patient patient) throws PatientNotFoundException {
         Patient retrivedPatient = repository.findById(id)
@@ -75,6 +107,11 @@ public class PatientServiceImpl implements PatientService {
         return repository.save(retrivedPatient);
     }
 
+    /**
+     * @param id
+     * @return String
+     * @throws PatientNotFoundException
+     */
     @Override
     public String delete(long id) throws PatientNotFoundException {
         repository.findById(id).orElseThrow(() -> new PatientNotFoundException(patientNotFoundMessage(id)));

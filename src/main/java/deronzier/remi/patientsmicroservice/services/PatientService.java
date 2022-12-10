@@ -6,6 +6,12 @@ import org.springframework.data.domain.Pageable;
 import deronzier.remi.patientsmicroservice.exceptions.PatientNotFoundException;
 import deronzier.remi.patientsmicroservice.models.Patient;
 
+/**
+ * This interface defines all the methods for the services related to the
+ * Patient entity
+ * 
+ * @author Rémi Deronzier
+ */
 public interface PatientService {
     public Page<Patient> findAll(Pageable pageable);
 
