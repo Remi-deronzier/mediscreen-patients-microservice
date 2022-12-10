@@ -6,7 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
+import deronzier.remi.patientsmicroservice.utils.Constants;
+
+@ActiveProfiles(Constants.TEST_PROFILE)
 public class PatientTest {
 
     private static final String FIRST_NAME = "Paul";
