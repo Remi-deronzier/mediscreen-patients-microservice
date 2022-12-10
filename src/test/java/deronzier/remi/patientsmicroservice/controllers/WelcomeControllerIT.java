@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,7 +22,8 @@ import deronzier.remi.patientsmicroservice.utils.Constants;
 @Transactional
 public class WelcomeControllerIT {
 
-    private final static String WELCOME_MESSAGE = "Hello, welcome to patients microservice";
+    @Value("${label.welcome}")
+    private String greetings;
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,7 +32,7 @@ public class WelcomeControllerIT {
     void givenRootBaseUrl_whenApiIsListening_thenSuccess() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", is(WELCOME_MESSAGE)));
+                .andExpect(jsonPath("$", is(greetings)));
     }
 
 }
