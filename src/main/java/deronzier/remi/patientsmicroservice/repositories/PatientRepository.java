@@ -1,7 +1,6 @@
 package deronzier.remi.patientsmicroservice.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import deronzier.remi.patientsmicroservice.models.Patient;
 
@@ -10,7 +9,6 @@ import deronzier.remi.patientsmicroservice.models.Patient;
  * 
  * @author Rémi Deronzier
  */
-@Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
 
 }
