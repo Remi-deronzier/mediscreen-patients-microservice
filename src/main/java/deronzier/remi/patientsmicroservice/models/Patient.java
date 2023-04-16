@@ -11,7 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.PastOrPresent;
 
 import lombok.Data;
 
@@ -37,7 +37,7 @@ public class Patient {
 
     @Column(nullable = false)
     @NotNull(groups = CreateClass.class)
-    @Past
+    @PastOrPresent
     private LocalDate dateOfBirth;
 
     @Column(nullable = false)
