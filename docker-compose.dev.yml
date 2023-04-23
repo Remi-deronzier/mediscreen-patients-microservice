@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  mysqldb:
+    image: mysql:8.0.33
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file: ./.env.dev
+    volumes:
+      - type: volume
+        source: mysqldev
+        target: /var/lib/mysql
+  patients-microservice:
+    image: remax21/patients-microservice
+    env_file: ./.env.dev
+    ports:
+      - 8081:8081
+    depends_on:
+      - mysqldb
+
+volumes:
+  mysqldev:
